@@ -1,0 +1,237 @@
+diff --git a/docs/source/_toctree.yml b/docs/source/_toctree.yml
+index eb240081..66743af6 100644
+--- a/docs/source/_toctree.yml
++++ b/docs/source/_toctree.yml
+@@ -165,6 +165,8 @@
+     title: OpenArm
+   - local: rebot_b601
+     title: reBot B601-DM
++  - local: encos
++    title: ENCOS Dual Arm
+   - local: third_party_robots
+     title: Third-Party Robots & Teleoperators
+   title: "Robots"
+diff --git a/src/lerobot/configs/train.py b/src/lerobot/configs/train.py
+index 9381a037..d444e6b8 100644
+--- a/src/lerobot/configs/train.py
++++ b/src/lerobot/configs/train.py
+@@ -312,8 +312,13 @@ class TrainPipelineConfig(HubMixin):
+         if not self.use_policy_training_preset and (self.optimizer is None or self.scheduler is None):
+             raise ValueError("Optimizer and Scheduler must be set when the policy presets are not used.")
+         elif self.use_policy_training_preset and not self.resume:
+-            self.optimizer = active_cfg.get_optimizer_preset()
+-            self.scheduler = active_cfg.get_scheduler_preset()
++            # Keep explicit CLI overrides while filling only the missing pieces from
++            # the policy preset. This allows, for example, ACT's parameter-grouped
++            # optimizer to be paired with an explicitly configured LR scheduler.
++            if self.optimizer is None:
++                self.optimizer = active_cfg.get_optimizer_preset()
++            if self.scheduler is None:
++                self.scheduler = active_cfg.get_scheduler_preset()
+ 
+         if self.eval_steps > 0 and self.dataset.eval_split == 0.0:
+             raise ValueError("eval_steps > 0 requires dataset.eval_split > 0.0 to hold out eval data.")
+diff --git a/src/lerobot/optim/factory.py b/src/lerobot/optim/factory.py
+index ce519e0b..360dc7eb 100644
+--- a/src/lerobot/optim/factory.py
++++ b/src/lerobot/optim/factory.py
+@@ -15,6 +15,8 @@
+ # limitations under the License.
+ 
+ 
++import math
++
+ from torch.optim import Optimizer
+ from torch.optim.lr_scheduler import LRScheduler
+ 
+@@ -38,5 +40,11 @@ def make_optimizer_and_scheduler(
+     if cfg.optimizer is None:
+         raise ValueError("Optimizer config is required but not provided in TrainPipelineConfig")
+     optimizer = cfg.optimizer.build(params)
+-    lr_scheduler = cfg.scheduler.build(optimizer, cfg.steps) if cfg.scheduler is not None else None
++    # ``cfg.steps`` counts dataloader micro-batches, while the training loop advances
++    # the scheduler only when accumulated gradients produce an optimizer update.
++    # Build update-based schedules against the same clock that steps them.
++    num_optimizer_steps = math.ceil(cfg.steps / cfg.accelerator.gradient_accumulation.steps)
++    lr_scheduler = (
++        cfg.scheduler.build(optimizer, num_optimizer_steps) if cfg.scheduler is not None else None
++    )
+     return optimizer, lr_scheduler
+diff --git a/src/lerobot/policies/act/configuration_act.py b/src/lerobot/policies/act/configuration_act.py
+index b5c3d68f..37119d26 100644
+--- a/src/lerobot/policies/act/configuration_act.py
++++ b/src/lerobot/policies/act/configuration_act.py
+@@ -160,8 +160,12 @@ class ACTConfig(PreTrainedConfig):
+         return None
+ 
+     def validate_features(self) -> None:
+-        if not self.image_features and not self.env_state_feature:
+-            raise ValueError("You must provide at least one image or the environment state among the inputs.")
++        # Proprioception-only ACT is useful for fixed-scene controllers such as
++        # the whiteboard TCP setup.
++        if not self.image_features and not self.env_state_feature and not self.robot_state_feature:
++            raise ValueError(
++                "You must provide at least one image, environment state, or observation.state input."
++            )
+ 
+     @property
+     def observation_delta_indices(self) -> None:
+diff --git a/src/lerobot/policies/act/modeling_act.py b/src/lerobot/policies/act/modeling_act.py
+index 2298db39..03e8dc61 100644
+--- a/src/lerobot/policies/act/modeling_act.py
++++ b/src/lerobot/policies/act/modeling_act.py
+@@ -403,7 +403,14 @@ class ACT(nn.Module):
+                 "actions must be provided when using the variational objective in training mode."
+             )
+ 
+-        batch_size = batch[OBS_IMAGES][0].shape[0] if OBS_IMAGES in batch else batch[OBS_ENV_STATE].shape[0]
++        if OBS_IMAGES in batch:
++            batch_size = batch[OBS_IMAGES][0].shape[0]
++        elif OBS_ENV_STATE in batch:
++            batch_size = batch[OBS_ENV_STATE].shape[0]
++        elif OBS_STATE in batch:
++            batch_size = batch[OBS_STATE].shape[0]
++        else:
++            raise KeyError(f"ACT requires one of {OBS_IMAGES!r}, {OBS_ENV_STATE!r}, or {OBS_STATE!r} in the batch")
+ 
+         # Prepare the latent for input to the transformer encoder.
+         if self.config.use_vae and ACTION in batch and self.training:
+diff --git a/src/lerobot/robots/__init__.py b/src/lerobot/robots/__init__.py
+index eb8b06fb..36dcb909 100644
+--- a/src/lerobot/robots/__init__.py
++++ b/src/lerobot/robots/__init__.py
+@@ -14,8 +14,9 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
++from . import encos
+ from .config import RobotConfig
+ from .robot import Robot
+ from .utils import make_robot_from_config
+ 
+-__all__ = ["Robot", "RobotConfig", "make_robot_from_config"]
++__all__ = ["Robot", "RobotConfig", "encos", "make_robot_from_config"]
+diff --git a/src/lerobot/robots/utils.py b/src/lerobot/robots/utils.py
+index b3874e5c..d22ca018 100644
+--- a/src/lerobot/robots/utils.py
++++ b/src/lerobot/robots/utils.py
+@@ -66,6 +66,14 @@ def make_robot_from_config(config: RobotConfig) -> Robot:
+         from .openarm_follower import OpenArmFollower
+ 
+         return OpenArmFollower(config)
++    elif config.type == "encos_dual_arm":
++        from .encos import EncosDualArm
++
++        return EncosDualArm(config)
++    elif config.type == "encos_whiteboard":
++        from .encos import EncosWhiteboard
++
++        return EncosWhiteboard(config)
+     elif config.type == "bi_openarm_follower":
+         from .bi_openarm_follower import BiOpenArmFollower
+ 
+diff --git a/src/lerobot/rollout/context.py b/src/lerobot/rollout/context.py
+index eceb41a1..2c2f2b72 100644
+--- a/src/lerobot/rollout/context.py
++++ b/src/lerobot/rollout/context.py
+@@ -418,11 +418,19 @@ def build_rollout_context(
+     # x/y/theta.vel) and the policy was trained/normalized on all 9; the old .pos-only
+     # filter fed a 6-dim state into a 9-dim normalizer → RuntimeError (size 6 vs 9).
+     # Pure-arm robots have no .vel state keys, so this is a no-op for them.
+-    observation_features_hw = {
+-        k: v
+-        for k, v in all_obs_features.items()
+-        if isinstance(v, tuple) or (v is float and k.endswith((".pos", ".vel")))
+-    }
++    # Most motor robots expose scalar channels with ``.pos``/``.vel`` names.
++    # The whiteboard TCP adapter exposes a deliberate flat 29D state instead,
++    # so retain every declared scalar channel for that robot.
++    if robot.name == "encos_whiteboard":
++        observation_features_hw = {
++            k: v for k, v in all_obs_features.items() if isinstance(v, tuple) or v is float
++        }
++    else:
++        observation_features_hw = {
++            k: v
++            for k, v in all_obs_features.items()
++            if isinstance(v, tuple) or (v is float and k.endswith((".pos", ".vel")))
++        }
+     policy_action_names = getattr(policy_config, "action_feature_names", None)
+     observation_features_hw = _align_state_feature_order(
+         observation_features_hw,
+@@ -433,7 +441,14 @@ def build_rollout_context(
+     # x/y/theta.vel = 9-dim action). Pure-arm robots have no .vel keys, so this is
+     # a no-op for them. Without the .vel keys the base velocities are silently
+     # dropped from dataset_features[ACTION]/ordered_action_keys and the base never moves.
+-    action_features_hw = {k: v for k, v in robot.action_features.items() if k.endswith((".pos", ".vel"))}
++    if robot.name == "encos_whiteboard":
++        # The whiteboard bridge commands an absolute TCP XYZ target rather than
++        # joint-space ``.pos``/``.vel`` features.
++        action_features_hw = dict(robot.action_features)
++    else:
++        action_features_hw = {
++            k: v for k, v in robot.action_features.items() if k.endswith((".pos", ".vel"))
++        }
+ 
+     # The action side is always needed: sync inference reads action names from
+     # ``dataset_features[ACTION]`` to map policy tensors back to robot actions.
+diff --git a/src/lerobot/scripts/lerobot_train.py b/src/lerobot/scripts/lerobot_train.py
+index 5d55dda5..87c1ca61 100644
+--- a/src/lerobot/scripts/lerobot_train.py
++++ b/src/lerobot/scripts/lerobot_train.py
+@@ -165,7 +165,7 @@ def update_policy(
+         grad_clip_norm (float): The maximum norm for gradient clipping (no clipping when <= 0).
+         accelerator (Accelerator): The Accelerator instance for distributed training and mixed precision.
+         lr_scheduler (LRScheduler | None, optional): An optional learning rate scheduler, stepped once
+-            per micro-batch. Defaults to None.
++            per optimizer update. Defaults to None.
+         lock (Lock | None, optional): An optional lock for thread-safe optimizer updates.
+             Defaults to None.
+         sample_weighter (SampleWeighter | None, optional): Optional SampleWeighter instance for
+@@ -232,8 +232,9 @@ def update_policy(
+             optimizer.step()
+         optimizer.zero_grad()
+ 
+-        # Step through pytorch scheduler at every batch instead of epoch
+-        if lr_scheduler is not None:
++        # Keep update-based schedules aligned with real optimizer updates. Under
++        # gradient accumulation, optimizer.step() is a no-op on non-sync batches.
++        if lr_scheduler is not None and accelerator.sync_gradients:
+             lr_scheduler.step()
+ 
+     # Update internal buffers if policy has update method. These track optimizer updates
+diff --git a/src/lerobot/teleoperators/__init__.py b/src/lerobot/teleoperators/__init__.py
+index d66e4b67..1e2ab3a0 100644
+--- a/src/lerobot/teleoperators/__init__.py
++++ b/src/lerobot/teleoperators/__init__.py
+@@ -14,8 +14,10 @@
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+ 
++from . import encos_feedback
++from . import whiteboard_tcp
+ from .config import TeleoperatorConfig
+ from .teleoperator import Teleoperator
+ from .utils import TeleopEvents, make_teleoperator_from_config
+ 
+-__all__ = ["Teleoperator", "TeleoperatorConfig", "TeleopEvents", "make_teleoperator_from_config"]
++__all__ = ["Teleoperator", "TeleoperatorConfig", "TeleopEvents", "encos_feedback", "whiteboard_tcp", "make_teleoperator_from_config"]
+diff --git a/src/lerobot/teleoperators/utils.py b/src/lerobot/teleoperators/utils.py
+index 0f0eaf07..2971c423 100644
+--- a/src/lerobot/teleoperators/utils.py
++++ b/src/lerobot/teleoperators/utils.py
+@@ -67,6 +67,14 @@ def make_teleoperator_from_config(config: TeleoperatorConfig) -> "Teleoperator":
+         from .keyboard.teleop_keyboard import KeyboardEndEffectorTeleop
+ 
+         return KeyboardEndEffectorTeleop(config)
++    elif config.type == "encos_feedback":
++        from .encos_feedback import EncosFeedback
++
++        return EncosFeedback(config)
++    elif config.type == "whiteboard_tcp":
++        from .whiteboard_tcp import WhiteboardTcp
++
++        return WhiteboardTcp(config)
+     elif config.type == "homunculus_glove":
+         from .homunculus import HomunculusGlove
+ 

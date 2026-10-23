@@ -1,0 +1,19 @@
+{
+  "created_utc": "2026-10-23T08:01:38.770444+00:00",
+  "repositories": {
+    "IsaacLab": {
+      "original_path": "/home/user/IsaacLab",
+      "commit": "a859a5f9d29c3afcfe05f77735e3aaf167c0894e",
+      "status": " M isaaclab.sh\n?? ACT_WIPE_BOARD.md\n?? Gloria-M_urdf/\n?? OFFICIAL_DP_WIPE_BOARD.md\n?? TRAJECTORY_BENCHMARK.md\n?? check_hdf5.py\n?? checkhdf5.py\n?? convert_hdf5_to_lerobot.py\n?? deploy_act.sh\n?? deploy_official_dp.sh\n?? deploy_official_dp_small_xy.sh\n?? dual_arm/\n?? env_broken.yaml\n?? environment.yml.bak\n?? fix_usd.py\n?? official_act/\n?? official_diffusion_policy/\n?? policy_servers/\n?? run_arc_trajectory_comparison.sh\n?? run_official_dp_sim.sh\n?? run_official_dp_small_xy_vlatest_806.sh\n?? run_trajectory_benchmark.sh\n?? scripts/attach_policy_server_resources.py\n?? scripts/compare_trajectory_benchmarks.py\n?? scripts/dual_arm.zip\n?? scripts/dual_arm/\n?? scripts/eval_whiteboard.py\n?? scripts/export_act_wipe_csv.py\n?? scripts/export_lerobot_dataset_csv.py\n?? scripts/migrate_trajectory_tcp_semantics.py\n?? scripts/my_projects/\n?? scripts/plot_act_wipe_trajectory.py\n?? scripts/plot_trajectory_benchmark.py\n?? scripts/train_whiteboard.py\n?? source/isaaclab_tasks/isaaclab_tasks/manager_based/manipulation/whiteboard_erasing/\n?? test_minimal.py\n?? train_act.sh\n?? train_official_dp.sh\n?? train_official_dp_small_xy.sh\n?? trajectory_results/\n?? vla_dataset/\n?? vla_test\n?? vla_test_data/\n?? whiteboard_repro/\n"
+    },
+    "lerobot": {
+      "original_path": "/home/user/catkin_ws_ENCOS擦白板/catkin_ws_ENCOS/lerobot",
+      "commit": "3f2c29ef7e44b1ddccbcda3b6a63939e53639e9e",
+      "status": " M docs/source/_toctree.yml\n M src/lerobot/configs/train.py\n M src/lerobot/optim/factory.py\n M src/lerobot/policies/act/configuration_act.py\n M src/lerobot/policies/act/modeling_act.py\n M src/lerobot/robots/__init__.py\n M src/lerobot/robots/utils.py\n M src/lerobot/rollout/context.py\n M src/lerobot/scripts/lerobot_train.py\n M src/lerobot/teleoperators/__init__.py\n M src/lerobot/teleoperators/utils.py\n?? docs/source/encos.md\n?? outputs.zip\n?? scripts/prepare_whiteboard_act_dataset.py\n?? scripts/train_whiteboard_act_optimized.sh\n?? src/lerobot/robots/encos/\n?? src/lerobot/teleoperators/encos_feedback/\n?? src/lerobot/teleoperators/whiteboard_tcp/\n?? tests/test_encos_bridge.py\n"
+    }
+  },
+  "os": "PRETTY_NAME=\"Ubuntu 22.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"22.04\"\nVERSION=\"22.04.5 LTS (Jammy Jellyfish)\"\nVERSION_CODENAME=jammy\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=jammy\n",
+  "gpu": "name, driver_version, memory.total [MiB]\nNVIDIA GeForce RTX 4090, 580.167.08, 24564 MiB\n",
+  "isaacsim_version": "5.1.0-rc.19+release.26219.9c81211b.gl",
+  "last_checkpoint": "/mnt/bigdrive/output_models/wipe_board_act/checkpoints/100000"
+}

@@ -1,0 +1,714 @@
+{
+  "python": "3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:20:58) [GCC 14.3.0]",
+  "prefix": "/home/user/miniconda3/envs/lerobot",
+  "packages": [
+    {
+      "name": "mpmath",
+      "version": "1.3.0",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-cublas",
+      "version": "13.1.0.3",
+      "direct_url": null
+    },
+    {
+      "name": "cuda-toolkit",
+      "version": "13.0.2",
+      "direct_url": null
+    },
+    {
+      "name": "annotated-doc",
+      "version": "0.0.4",
+      "direct_url": null
+    },
+    {
+      "name": "jsonlines",
+      "version": "4.0.0",
+      "direct_url": null
+    },
+    {
+      "name": "typing-inspect",
+      "version": "0.9.0",
+      "direct_url": null
+    },
+    {
+      "name": "cloudpickle",
+      "version": "3.1.2",
+      "direct_url": null
+    },
+    {
+      "name": "sympy",
+      "version": "1.14.0",
+      "direct_url": null
+    },
+    {
+      "name": "PyOpenGL",
+      "version": "3.1.10",
+      "direct_url": null
+    },
+    {
+      "name": "anyio",
+      "version": "4.13.0",
+      "direct_url": null
+    },
+    {
+      "name": "cmake",
+      "version": "4.1.3",
+      "direct_url": null
+    },
+    {
+      "name": "orderly-set",
+      "version": "5.5.0",
+      "direct_url": null
+    },
+    {
+      "name": "pydantic_core",
+      "version": "2.46.4",
+      "direct_url": null
+    },
+    {
+      "name": "importlib_metadata",
+      "version": "9.0.0",
+      "direct_url": null
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0",
+      "direct_url": null
+    },
+    {
+      "name": "platformdirs",
+      "version": "4.9.6",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-cudnn-cu13",
+      "version": "9.19.0.56",
+      "direct_url": null
+    },
+    {
+      "name": "httpcore",
+      "version": "1.0.9",
+      "direct_url": null
+    },
+    {
+      "name": "accelerate",
+      "version": "1.15.0",
+      "direct_url": null
+    },
+    {
+      "name": "safetensors",
+      "version": "0.7.0",
+      "direct_url": null
+    },
+    {
+      "name": "imageio-ffmpeg",
+      "version": "0.6.0",
+      "direct_url": null
+    },
+    {
+      "name": "wrapt",
+      "version": "2.2.1",
+      "direct_url": null
+    },
+    {
+      "name": "deepdiff",
+      "version": "8.6.2",
+      "direct_url": null
+    },
+    {
+      "name": "dm-tree",
+      "version": "0.1.10",
+      "direct_url": null
+    },
+    {
+      "name": "setuptools",
+      "version": "80.10.2",
+      "direct_url": null
+    },
+    {
+      "name": "lxml",
+      "version": "6.1.1",
+      "direct_url": null
+    },
+    {
+      "name": "pandas",
+      "version": "2.3.3",
+      "direct_url": null
+    },
+    {
+      "name": "opencv-python-headless",
+      "version": "4.13.0.92",
+      "direct_url": null
+    },
+    {
+      "name": "click",
+      "version": "8.4.1",
+      "direct_url": null
+    },
+    {
+      "name": "lerobot",
+      "version": "0.6.2",
+      "direct_url": {
+        "dir_info": {
+          "editable": true
+        },
+        "url": "file:///home/user/catkin_ws_ENCOS%E6%93%A6%E7%99%BD%E6%9D%BF/catkin_ws_ENCOS/lerobot"
+      }
+    },
+    {
+      "name": "toml",
+      "version": "0.10.2",
+      "direct_url": null
+    },
+    {
+      "name": "certifi",
+      "version": "2026.5.20",
+      "direct_url": null
+    },
+    {
+      "name": "propcache",
+      "version": "0.5.2",
+      "direct_url": null
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.15.0",
+      "direct_url": null
+    },
+    {
+      "name": "pyarrow",
+      "version": "24.0.0",
+      "direct_url": null
+    },
+    {
+      "name": "cuda-bindings",
+      "version": "13.2.0",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-cuda-nvrtc",
+      "version": "13.0.88",
+      "direct_url": null
+    },
+    {
+      "name": "pyserial",
+      "version": "3.5",
+      "direct_url": null
+    },
+    {
+      "name": "attrs",
+      "version": "26.1.0",
+      "direct_url": null
+    },
+    {
+      "name": "smmap",
+      "version": "5.0.3",
+      "direct_url": null
+    },
+    {
+      "name": "ur_rtde",
+      "version": "1.6.3",
+      "direct_url": null
+    },
+    {
+      "name": "aiosignal",
+      "version": "1.4.0",
+      "direct_url": null
+    },
+    {
+      "name": "hf-xet",
+      "version": "1.5.0",
+      "direct_url": null
+    },
+    {
+      "name": "zipp",
+      "version": "4.1.0",
+      "direct_url": null
+    },
+    {
+      "name": "datasets",
+      "version": "4.8.5",
+      "direct_url": null
+    },
+    {
+      "name": "termcolor",
+      "version": "3.3.0",
+      "direct_url": null
+    },
+    {
+      "name": "networkx",
+      "version": "3.6.1",
+      "direct_url": null
+    },
+    {
+      "name": "fsspec",
+      "version": "2026.2.0",
+      "direct_url": null
+    },
+    {
+      "name": "triton",
+      "version": "3.6.0",
+      "direct_url": null
+    },
+    {
+      "name": "huggingface_hub",
+      "version": "1.16.1",
+      "direct_url": null
+    },
+    {
+      "name": "labmaze",
+      "version": "1.0.6",
+      "direct_url": null
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.7.0",
+      "direct_url": null
+    },
+    {
+      "name": "absl-py",
+      "version": "2.4.0",
+      "direct_url": null
+    },
+    {
+      "name": "transformers",
+      "version": "5.5.4",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-nvjitlink",
+      "version": "13.0.88",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-cufile",
+      "version": "1.15.1.6",
+      "direct_url": null
+    },
+    {
+      "name": "draccus",
+      "version": "0.11.6",
+      "direct_url": null
+    },
+    {
+      "name": "dm_control",
+      "version": "1.0.41",
+      "direct_url": null
+    },
+    {
+      "name": "multidict",
+      "version": "6.7.1",
+      "direct_url": null
+    },
+    {
+      "name": "frozenlist",
+      "version": "1.8.0",
+      "direct_url": null
+    },
+    {
+      "name": "GitPython",
+      "version": "3.1.50",
+      "direct_url": null
+    },
+    {
+      "name": "typer",
+      "version": "0.25.1",
+      "direct_url": null
+    },
+    {
+      "name": "tqdm",
+      "version": "4.67.3",
+      "direct_url": null
+    },
+    {
+      "name": "requests",
+      "version": "2.34.2",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-cuda-cupti",
+      "version": "13.0.85",
+      "direct_url": null
+    },
+    {
+      "name": "pyyaml-include",
+      "version": "1.4.1",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-cusolver",
+      "version": "12.0.4.66",
+      "direct_url": null
+    },
+    {
+      "name": "wandb",
+      "version": "0.24.2",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-nccl-cu13",
+      "version": "2.28.9",
+      "direct_url": null
+    },
+    {
+      "name": "feetech-servo-sdk",
+      "version": "1.0.0",
+      "direct_url": null
+    },
+    {
+      "name": "gloria-m-sdk",
+      "version": "1.0.3",
+      "direct_url": {
+        "dir_info": {
+          "editable": true
+        },
+        "url": "file:///home/user/blackboard_wipe/Gloria-M-SDK"
+      }
+    },
+    {
+      "name": "Farama-Notifications",
+      "version": "0.0.6",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-cufft",
+      "version": "12.0.0.61",
+      "direct_url": null
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6",
+      "direct_url": null
+    },
+    {
+      "name": "httpx",
+      "version": "0.28.1",
+      "direct_url": null
+    },
+    {
+      "name": "pydantic",
+      "version": "2.13.4",
+      "direct_url": null
+    },
+    {
+      "name": "wheel",
+      "version": "0.46.3",
+      "direct_url": null
+    },
+    {
+      "name": "gitdb",
+      "version": "4.0.12",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-nvshmem-cu13",
+      "version": "3.4.5",
+      "direct_url": null
+    },
+    {
+      "name": "xxhash",
+      "version": "3.7.0",
+      "direct_url": null
+    },
+    {
+      "name": "scipy",
+      "version": "1.17.1",
+      "direct_url": null
+    },
+    {
+      "name": "filelock",
+      "version": "3.29.0",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-curand",
+      "version": "10.4.0.35",
+      "direct_url": null
+    },
+    {
+      "name": "rich",
+      "version": "15.0.0",
+      "direct_url": null
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.2",
+      "direct_url": null
+    },
+    {
+      "name": "idna",
+      "version": "3.16",
+      "direct_url": null
+    },
+    {
+      "name": "psutil",
+      "version": "7.2.2",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-cuda-runtime",
+      "version": "13.0.96",
+      "direct_url": null
+    },
+    {
+      "name": "dm-env",
+      "version": "1.6",
+      "direct_url": null
+    },
+    {
+      "name": "etils",
+      "version": "1.14.0",
+      "direct_url": null
+    },
+    {
+      "name": "sentry-sdk",
+      "version": "2.60.0",
+      "direct_url": null
+    },
+    {
+      "name": "gymnasium",
+      "version": "1.3.0",
+      "direct_url": null
+    },
+    {
+      "name": "torchvision",
+      "version": "0.26.0",
+      "direct_url": null
+    },
+    {
+      "name": "glfw",
+      "version": "2.10.0",
+      "direct_url": null
+    },
+    {
+      "name": "aiohttp",
+      "version": "3.13.5",
+      "direct_url": null
+    },
+    {
+      "name": "numpy",
+      "version": "2.2.6",
+      "direct_url": null
+    },
+    {
+      "name": "protobuf",
+      "version": "6.33.6",
+      "direct_url": null
+    },
+    {
+      "name": "markdown-it-py",
+      "version": "4.2.0",
+      "direct_url": null
+    },
+    {
+      "name": "regex",
+      "version": "2026.7.19",
+      "direct_url": null
+    },
+    {
+      "name": "ImageIO",
+      "version": "2.37.3",
+      "direct_url": null
+    },
+    {
+      "name": "pip",
+      "version": "26.0.1",
+      "direct_url": {
+        "dir_info": {},
+        "url": "file:///home/task_177498883471825/croot/pip_1774988882575/work"
+      }
+    },
+    {
+      "name": "nvidia-cusparse",
+      "version": "12.6.3.3",
+      "direct_url": null
+    },
+    {
+      "name": "h5py",
+      "version": "3.16.0",
+      "direct_url": null
+    },
+    {
+      "name": "dill",
+      "version": "0.4.1",
+      "direct_url": null
+    },
+    {
+      "name": "msgpack",
+      "version": "1.0.8",
+      "direct_url": null
+    },
+    {
+      "name": "av",
+      "version": "15.1.0",
+      "direct_url": null
+    },
+    {
+      "name": "gym-aloha",
+      "version": "0.1.3",
+      "direct_url": null
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0",
+      "direct_url": null
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "3.4.7",
+      "direct_url": null
+    },
+    {
+      "name": "websockets",
+      "version": "16.0",
+      "direct_url": null
+    },
+    {
+      "name": "pyrealsense2",
+      "version": "2.58.1.10581",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-cusparselt-cu13",
+      "version": "0.8.0",
+      "direct_url": null
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.2",
+      "direct_url": null
+    },
+    {
+      "name": "tokenizers",
+      "version": "0.22.2",
+      "direct_url": null
+    },
+    {
+      "name": "pillow",
+      "version": "12.2.0",
+      "direct_url": null
+    },
+    {
+      "name": "torchcodec",
+      "version": "0.11.1",
+      "direct_url": null
+    },
+    {
+      "name": "multiprocess",
+      "version": "0.70.19",
+      "direct_url": null
+    },
+    {
+      "name": "einops",
+      "version": "0.8.2",
+      "direct_url": null
+    },
+    {
+      "name": "six",
+      "version": "1.17.0",
+      "direct_url": null
+    },
+    {
+      "name": "opencv-python",
+      "version": "4.13.0.92",
+      "direct_url": null
+    },
+    {
+      "name": "mergedeep",
+      "version": "1.3.4",
+      "direct_url": null
+    },
+    {
+      "name": "diffusers",
+      "version": "0.35.2",
+      "direct_url": null
+    },
+    {
+      "name": "msgpack-numpy",
+      "version": "0.4.8",
+      "direct_url": null
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.3",
+      "direct_url": null
+    },
+    {
+      "name": "torch",
+      "version": "2.11.0",
+      "direct_url": null
+    },
+    {
+      "name": "yarl",
+      "version": "1.24.2",
+      "direct_url": null
+    },
+    {
+      "name": "shellingham",
+      "version": "1.5.4",
+      "direct_url": null
+    },
+    {
+      "name": "mujoco",
+      "version": "3.8.1",
+      "direct_url": null
+    },
+    {
+      "name": "PyYAML",
+      "version": "6.0.3",
+      "direct_url": null
+    },
+    {
+      "name": "mdurl",
+      "version": "0.1.2",
+      "direct_url": null
+    },
+    {
+      "name": "packaging",
+      "version": "25.0",
+      "direct_url": null
+    },
+    {
+      "name": "pytz",
+      "version": "2026.2",
+      "direct_url": null
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.2",
+      "direct_url": null
+    },
+    {
+      "name": "cuda-pathfinder",
+      "version": "1.5.4",
+      "direct_url": null
+    },
+    {
+      "name": "nvidia-nvtx",
+      "version": "13.0.85",
+      "direct_url": null
+    },
+    {
+      "name": "Pygments",
+      "version": "2.20.0",
+      "direct_url": null
+    },
+    {
+      "name": "aiohappyeyeballs",
+      "version": "2.6.2",
+      "direct_url": null
+    },
+    {
+      "name": "urllib3",
+      "version": "2.7.0",
+      "direct_url": null
+    },
+    {
+      "name": "mypy_extensions",
+      "version": "1.1.0",
+      "direct_url": null
+    }
+  ]
+}

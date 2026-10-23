@@ -1,0 +1,16 @@
+diff --git a/isaaclab.sh b/isaaclab.sh
+index 2f7ab42de..9c9b73937 100755
+--- a/isaaclab.sh
++++ b/isaaclab.sh
+@@ -12,8 +12,9 @@
+ # Exits if error occurs
+ set -e
+ 
+-# Set tab-spaces
+-tabs 4
++# Set tab-spaces when the terminal supports terminfo. Some launchers and
++# redirected sessions use TERM=dumb, where `tabs` exits with an error.
++tabs 4 2>/dev/null || true
+ 
+ # get source directory
+ export ISAACLAB_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
