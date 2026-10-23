@@ -15,6 +15,8 @@ local.env
 /isaacsim/
 /IsaacLab/_isaac_sim
 /IsaacLab/scripts/dual_arm/
+/IsaacLab/docs/source/_static/
+/lerobot/media/
 /IsaacLab/trajectory_results/
 *.tar.gz
 *.tar.part*
