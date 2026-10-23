@@ -12,6 +12,21 @@ login="$("${gh_bin}" api user --jq .login)"
 [[ "${login}" == "fk15856871430-hash" ]] || { echo "Wrong GitHub account: ${login}" >&2; exit 1; }
 [[ -f "${repo_root}/README.md" && -f "${repo_root}/IsaacLab/whiteboard_repro/run.sh" ]] || exit 1
 [[ -f "${assets}/assets.json" ]] || { echo "Run pack_assets.py first" >&2; exit 1; }
+# Reject old manifests containing demonstration/training data before any upload.
+python - "${assets}/assets.json" "${repo_root}/release_tools/pack_assets.py" <<'PY'
+import json,runpy,sys
+from pathlib import Path
+manifest=json.loads(Path(sys.argv[1]).read_text())
+allowed=runpy.run_path(sys.argv[2])['GROUPS']
+if not manifest.get('groups') or set(manifest['groups']) - set(allowed):
+    raise SystemExit('Refusing to publish datasets or unknown groups; use the runtime-only manifest.')
+for name,group in manifest['groups'].items():
+    if group['paths'] != allowed[name]:
+        raise SystemExit('Unexpected archive paths: '+name)
+    for part in group['parts']:
+        if Path(part['name']).name != part['name'] or not part['name'].startswith(name+'.tar.part'):
+            raise SystemExit('Unexpected archive filename: '+part['name'])
+PY
 # Verify files before any external write. No global git identity or original remote is changed.
 (cd "${assets}" && sha256sum -c SHA256SUMS --quiet)
 cd "${repo_root}"
@@ -37,7 +52,7 @@ git -c credential.helper= -c "credential.helper=!${gh_bin} auth git-credential" 
 if ! "${gh_bin}" release view "${tag}" --repo "${repo}" >/dev/null 2>&1; then
   "${gh_bin}" release create "${tag}" --repo "${repo}" --target main --draft \
     --title "ACT whiteboard wiping v1.0.0" \
-    --notes "Source, custom robot assets and trajectory examples are in the repository. Download runtime/environments for inference; training-data/raw-demonstrations are optional for retraining. Use release_tools/download_assets.py to verify and extract. Isaac Sim is installed separately from NVIDIA."
+    --notes "Source and trajectory examples are in the repository. Download robot-assets/runtime/environments for inference. Demonstration and training datasets are not published; only inference metadata/statistics are included. Use release_tools/download_assets.py to verify and extract. Isaac Sim is installed separately from NVIDIA."
 fi
 # One file at a time. Keep the release draft until every part is uploaded.
 # The Python helper verifies existing assets by server SHA256, and never clobbers them.

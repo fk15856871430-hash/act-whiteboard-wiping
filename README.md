@@ -4,12 +4,12 @@
 这里整理了已经实现的仿真、专家采集、ACT 数据转换、训练、WebSocket 部署与 TCP 轨迹记录。
 控制频率为仿真时间 50 Hz，ACT chunk=50、执行=50。实际墙钟运行速度由硬件和渲染负载决定。
 
-**发布状态：源码与示例已公开；模型、机器人资产、环境和数据分卷尚未上传完成，v1.0.0 Release 目前保持草稿。以下 Release 下载命令须待附件全部上传并公开后使用；当前仅克隆源码还不能直接运行任务。**
+**发布状态：源码与示例已公开；模型、机器人资产和环境附件尚未上传完成，v1.0.0 Release 目前保持草稿。以下 Release 下载命令须待附件全部上传并公开后使用；当前仅克隆源码还不能直接运行任务。原始示教及训练数据集不公开上传。**
 
 ## 下载哪些内容
 
 代码、本地修改的 LeRobot 和示例曲线随 Git 仓库提供。
-机器人 USD/URDF/mesh、模型和大数据存放于 [Releases](https://github.com/fk15856871430-hash/act-whiteboard-wiping/releases/tag/v1.0.0)，不使用付费 Git LFS 配额。
+机器人 USD/URDF/mesh、模型和 Python 环境计划通过 [Releases](https://github.com/fk15856871430-hash/act-whiteboard-wiping/releases/tag/v1.0.0) 提供，不使用付费 Git LFS 配额。
 每个附件小于 2 GiB；下载工具支持续传、SHA256 校验及分卷解包。
 
 | 下载组 | 用途 |
@@ -17,15 +17,14 @@
 | `robot-assets` | 原部署机器人完整 USD/URDF/mesh，约 109 MiB |
 | `runtime` | 现成 ACT checkpoint、归一化器、训练状态、dataset metadata、ResNet18 缓存 |
 | `environments` | 本机两个独立 Python 环境压缩包及审计记录，约 9.3 GiB |
-| `training-data` | 已转换的 777 回合、245817 帧 LeRobot 训练数据，约 15 GiB |
-| `raw-demonstrations` | 原始 785 个 HDF5，约 56 GiB |
 
-只运行现成模型，下载前三组即可；重训再下载训练数据，重新转换再下载原始示教。
+运行现成模型下载以上三组，共约 10.5 GiB。`runtime` 仅保留策略加载需要的 metadata/归一化统计信息，不含训练图像、逐帧训练样本或原始 HDF5。
+数据采集、转换和训练代码均提供；重新训练需要自行采集数据。
 环境为 Ubuntu 22.04 x86_64 打包；原机 RTX 4090 24 GiB、NVIDIA 驱动 580.167.08。
 
 ## 在另一台电脑运行
 
-先安装 Git、Python 3、tar、NVIDIA 驱动，并准备约 70 GiB 空间用于推理安装；全部数据和分卷同时保留建议至少 250 GiB。
+先安装 Git、Python 3、tar、NVIDIA 驱动，并准备约 70 GiB 空间用于推理安装。
 
 ```bash
 git clone https://github.com/fk15856871430-hash/act-whiteboard-wiping.git
@@ -83,26 +82,18 @@ Simple_Room 房间依赖在线 Isaac 资产；离线运行须准备房间的完�
 
 ## 采集、训练与轨迹导出
 
-在仓库根目录下载所需数据：
+原机数据集未上传。采集时先停止 ACT 服务，在两个终端依次运行 `run.sh collect-env` 与 `run.sh collect-planner`；两套通信共用 5556 端口。
+将自行采集的数据转换为 LeRobot 格式，并在 `local.env` 中设置对应的 `WHITEBOARD_RAW_DATA`、`DATASET_ROOT`；输入目录和转换参数见详细说明。
+进入 `IsaacLab` 后可使用：
 
 ```bash
-python3 release_tools/download_assets.py --groups training-data
-# 如需从原始示教重新转换：
-# python3 release_tools/download_assets.py --groups raw-demonstrations
-```
-
-进入 `IsaacLab` 后使用：
-
-```bash
-bash whiteboard_repro/run.sh train                # 使用现成训练数据重训，写入独立 runs
-bash whiteboard_repro/run.sh convert              # 冻结的 777 个原始回合重新转换
+bash whiteboard_repro/run.sh train                # 需先准备自己的完整训练数据，写入独立 runs
 bash whiteboard_repro/run.sh csv                  # 单回合记录导出 CSV
 bash whiteboard_repro/run.sh plot                 # 绘制曲线
 ```
 
-采集时先停止 ACT 服务，在两个终端依次运行 `run.sh collect-env` 与 `run.sh collect-planner`；两套通信共用 5556 端口。
 完整流程、数据维度、坐标系、参数和问题排查见 [详细说明](IsaacLab/whiteboard_repro/README.md)。
-其中关于“完整迁移副本自带 isaacsim/”的段落仅适用于原机私下迁移包；本 GitHub 公开版以本首页安装方式为准。
+详细说明中原机数据路径、冻结的 777 回合转换清单和“完整迁移副本自带 isaacsim/”等内容仅适用于原机私下迁移包；本 GitHub 公开版的数据范围和安装方式以本首页为准。
 
 ## 示例与来源
 

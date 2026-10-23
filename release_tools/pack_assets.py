@@ -11,8 +11,6 @@ GROUPS = {
     'robot-assets': ['IsaacLab/scripts/dual_arm'],
     'runtime': ['models', 'cache/torch', 'data/wipe_board_act_lerobot_v3/meta'],
     'environments': ['environments'],
-    'training-data': ['data/wipe_board_act_lerobot_v3/data'],
-    'raw-demonstrations': ['data/raw_hdf5'],
 }
 PIECE_SIZE = 1800 * 1024 * 1024
 
@@ -29,6 +27,8 @@ def pack(source, dest, group):
     summary = dest / f'{group}.json'
     if summary.exists():
         record = json.loads(summary.read_text())
+        if record['paths'] != GROUPS[group]:
+            raise ValueError(f'Existing group has unexpected paths: {group}')
         for item in record['parts']:
             path = dest / item['name']
             if path.stat().st_size != item['size'] or digest(path) != item['sha256']:
@@ -85,8 +85,9 @@ def main():
         raise ValueError('Release output must be outside the migration bundle')
     dest.mkdir(parents=True, exist_ok=True)
     manifest_path = dest / 'assets.json'
-    records = json.loads(manifest_path.read_text())['groups'] if manifest_path.exists() else {}
-    records.update({g: pack(source, dest, g) for g in args.groups})
+    # Use exactly the selected groups, even when reusing a previously larger output.
+    # Existing local files are preserved, but are not automatically advertised for upload.
+    records = {g: pack(source, dest, g) for g in args.groups}
     (dest / 'assets.json').write_text(json.dumps({'schema': 1, 'groups': records}, indent=2) + '\n')
     (dest / 'SHA256SUMS').write_text(''.join(f'{x["sha256"]}  {x["name"]}\n'
         for group in records.values() for x in group['parts']))

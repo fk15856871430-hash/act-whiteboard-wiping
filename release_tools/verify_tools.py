@@ -14,6 +14,9 @@ def load(name):
 
 def main():
     pack, download = load('pack_assets'), load('download_assets')
+    assert set(pack.GROUPS) == {'robot-assets', 'runtime', 'environments'}
+    assert all('/raw_hdf5' not in path and not path.endswith('/data')
+               for paths in pack.GROUPS.values() for path in paths)
     with tempfile.TemporaryDirectory(prefix='whiteboard-release-check-') as name:
         root = Path(name)
         source, parts, restored = root/'source', root/'parts', root/'restored'
